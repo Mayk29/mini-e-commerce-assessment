@@ -14,10 +14,7 @@ import pixel8 from '../assets/images/pixel-8-obsidian.png';
 import xiaomi14Ultra from '../assets/images/xiaomi-14-ultra-black.png';
 import nothingPhone2 from '../assets/images/nothing-phone-2-gray.png';
 import nothingPhone2a from '../assets/images/nothing-phone-2a-milk.png';
-
-// NOTE: redmi-note-13-white.png does not exist in src/assets/images/.
-// The Redmi Note 13 Pro+ 5G entry has been removed until the image is added.
-// To restore it: add the image file, import it above, and uncomment the entry below.
+import redmiNote13 from '../assets/images/redmi-note-13-white.png';
 
 export const INITIAL_PRODUCTS = [
   // --- APPLE ---
