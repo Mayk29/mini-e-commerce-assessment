@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { storage } from '../utils/storage';
 
-const StoreContext = createContext(undefined);
+const CartContext = createContext(undefined);
 
-export function StoreProvider({ children }) {
+export function CartProvider({ children }) {
   const [cart, setCart] = useState(() => storage.get('cart', []));
 
   useEffect(() => {
@@ -51,13 +51,13 @@ export function StoreProvider({ children }) {
     cartTotal,
   };
 
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-export function useStore() {
-  const context = useContext(StoreContext);
+export function useCart() {
+  const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useStore must be used within a StoreProvider');
+    throw new Error('useCart must be used within a CartProvider');
   }
   return context;
 }

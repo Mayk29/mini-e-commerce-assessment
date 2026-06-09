@@ -1,7 +1,7 @@
-// Centralized smartphone inventory catalog for CellWego Store [cite: 27]
-// Adheres strictly to the premium brand design system, omitting emojis and using semantic data formatting [cite: 17, 26, 35]
+// Consolidated product database for the CellWego Store
+// Merges specific smartphone items and structural static constants into a single data module
 
-export const PHONES = [
+export const INITIAL_PRODUCTS = [
   // --- APPLE ---
   {
     id: 'apple-iphone-15-pro-1',
@@ -120,3 +120,5 @@ export const PHONES = [
     price: 349
   }
 ];
+
+export const CATEGORIES = ['all', 'smartphones', 'laptops', 'audio', 'accessories'];
