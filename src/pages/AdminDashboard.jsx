@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { productService } from '../services/productService';
+import productService from '../services/productService';
 import AddProductForm from '../components/AddProductForm';
 
 export default function AdminDashboard() {
@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     let isMounted = true;
 
-    productService.getAll()
+    productService.getAllProducts()
       .then((data) => {
         if (isMounted) {
           setProducts(data);
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   // Handler to append newly created item via form to storage service and view state
   const handleAddProduct = async (newProduct) => {
     try {
-      const savedProduct = await productService.create(newProduct);
+      const savedProduct = await productService.createProduct(newProduct);
       setProducts((prevProducts) => [savedProduct, ...prevProducts]);
     } catch (err) {
       console.error('Error appending product to database storage:', err);
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
     if (!window.confirm('Are you sure you want to permanently remove this device from inventory?')) return;
 
     try {
-      await productService.delete(id);
+      await productService.deleteProduct(id);
       setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
     } catch (err) {
       console.error('Error deleting product from database storage:', err);
