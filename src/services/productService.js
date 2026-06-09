@@ -1,3 +1,5 @@
+import { INITIAL_PRODUCTS } from '../data/products';
+
 const STORAGE_KEY = 'products';
 const NETWORK_DELAY = 500;
 
@@ -10,11 +12,16 @@ const simulateDelay = (data) =>
   });
 
 /**
- * Get products from localStorage
+ * Get products from localStorage.
+ * Seeds localStorage with INITIAL_PRODUCTS on first run.
  */
 const getStoredProducts = () => {
-  const products = localStorage.getItem(STORAGE_KEY);
-  return products ? JSON.parse(products) : [];
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw !== null) {
+    return JSON.parse(raw);
+  }
+  saveProducts(INITIAL_PRODUCTS);
+  return INITIAL_PRODUCTS;
 };
 
 /**

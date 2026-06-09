@@ -1,20 +1,42 @@
-import { useState } from 'react';
-import { INITIAL_PRODUCTS, CATEGORIES } from '../data/products';
+import { useState, useEffect } from 'react';
+import { getAllProducts } from '../services/productService';
+import { INITIAL_PRODUCTS } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import ShoppingCart from '../components/ShoppingCart';
 
 export default function Storefront() {
   const { cartCount } = useCart();
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('all');
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Extract unique brands dynamically from data array
-  const brands = ['all', ...new Set(INITIAL_PRODUCTS.map((p) => p.brand))];
+  // Load products from productService on mount.
+  // Falls back to INITIAL_PRODUCTS if localStorage is empty (fresh session).
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIsLoading(true);
+      try {
+        const stored = await getAllProducts();
+        setProducts(stored.length > 0 ? stored : INITIAL_PRODUCTS);
+      } catch (err) {
+        console.error('Failed to load products:', err);
+        setProducts(INITIAL_PRODUCTS);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  // Extract unique brands dynamically from loaded products
+  const brands = ['all', ...new Set(products.map((p) => p.brand))];
 
   // Filter products based on search query and chosen brand category
-  const filteredProducts = INITIAL_PRODUCTS.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.brand.toLowerCase().includes(searchQuery.toLowerCase());
@@ -64,14 +86,14 @@ export default function Storefront() {
 
         {/* Layout Grid Separating Interactive Search Controls and Content Panels */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 items-start">
-          
+
           {/* Controls Panel: Search & Brand Filters */}
           <section className="space-y-6 lg:col-span-1" aria-label="Filters">
             <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
                 Filter Inventory
               </h2>
-              
+
               {/* Search Text Input Box */}
               <div className="space-y-2">
                 <label htmlFor="search" className="text-xs font-medium text-neutral-500">Search Devices</label>
@@ -89,20 +111,28 @@ export default function Storefront() {
               <div className="mt-6 space-y-2">
                 <span className="text-xs font-medium text-neutral-500 block">Brands</span>
                 <div className="flex flex-wrap gap-1.5 lg:flex-col lg:items-stretch">
-                  {brands.map((brand) => (
-                    <button
-                      key={brand}
-                      type="button"
-                      onClick={() => setSelectedBrand(brand)}
-                      className={`rounded-xl px-3 py-2 text-left text-xs font-medium capitalize transition-all duration-150 ${
-                        selectedBrand === brand
-                          ? 'bg-neutral-900 text-white shadow-sm'
-                          : 'bg-transparent text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
-                      }`}
-                    >
-                      {brand}
-                    </button>
-                  ))}
+                  {isLoading
+                    ? // Skeleton brand buttons while loading
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-8 w-full animate-pulse rounded-xl bg-neutral-100"
+                        />
+                      ))
+                    : brands.map((brand) => (
+                        <button
+                          key={brand}
+                          type="button"
+                          onClick={() => setSelectedBrand(brand)}
+                          className={`rounded-xl px-3 py-2 text-left text-xs font-medium capitalize transition-all duration-150 ${
+                            selectedBrand === brand
+                              ? 'bg-neutral-900 text-white shadow-sm'
+                              : 'bg-transparent text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                          }`}
+                        >
+                          {brand}
+                        </button>
+                      ))}
                 </div>
               </div>
             </div>
@@ -116,7 +146,29 @@ export default function Storefront() {
               </section>
             )}
 
-            {filteredProducts.length === 0 ? (
+            {isLoading ? (
+              /* Loading skeleton grid */
+              <section
+                className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3"
+                aria-label="Loading products"
+                aria-busy="true"
+              >
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="animate-pulse rounded-2xl border border-neutral-200 bg-white overflow-hidden">
+                    <div className="h-56 bg-neutral-100" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-3 w-1/3 rounded bg-neutral-100" />
+                      <div className="h-4 w-3/4 rounded bg-neutral-100" />
+                      <div className="h-3 w-1/2 rounded bg-neutral-100" />
+                      <div className="flex items-center justify-between pt-1">
+                        <div className="h-5 w-16 rounded bg-neutral-100" />
+                        <div className="h-8 w-24 rounded-full bg-neutral-100" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            ) : filteredProducts.length === 0 ? (
               /* Catalog Fallback Empty Match Layout State */
               <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-white py-20 text-center">
                 <p className="text-sm font-medium text-neutral-900">No products matched your criteria</p>
@@ -131,14 +183,14 @@ export default function Storefront() {
               </div>
             ) : (
               /* Product Responsive Layout Assembly Display Loop */
-              <section 
+              <section
                 className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3"
                 aria-label="Filtered Catalog Collection"
               >
                 {filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
+                  <ProductCard
+                    key={product.id}
+                    product={product}
                   />
                 ))}
               </section>
