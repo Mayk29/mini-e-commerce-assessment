@@ -1,5 +1,5 @@
-// Consolidated product database for the CellWego Store
-// Merges specific smartphone items and structural static constants into a single data module
+// Centralized inventory database for CellWego Store [cite: 1]
+// Standardized naming convention mapping directly to product application service domains [cite: 11]
 
 export const INITIAL_PRODUCTS = [
   // --- APPLE ---
