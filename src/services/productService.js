@@ -1,53 +1,39 @@
 import { INITIAL_PRODUCTS } from '../data/products';
+import { storage } from '../utils/storage';
 
-const STORAGE_KEY = 'products';
+const PRODUCTS_KEY = 'products';   // storage utility prepends 'cellwego_'
 const NETWORK_DELAY = 500;
 
-/**
- * Simulate API latency
- */
+/** Simulate API latency */
 const simulateDelay = (data) =>
-  new Promise((resolve) => {
-    setTimeout(() => resolve(data), NETWORK_DELAY);
-  });
+  new Promise((resolve) => setTimeout(() => resolve(data), NETWORK_DELAY));
 
-/**
- * Get products from localStorage.
- * Seeds localStorage with INITIAL_PRODUCTS on first run.
- */
+/** Read products from localStorage; seeds with INITIAL_PRODUCTS on first run */
 const getStoredProducts = () => {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (raw !== null) {
-    return JSON.parse(raw);
-  }
-  saveProducts(INITIAL_PRODUCTS);
+  const stored = storage.get(PRODUCTS_KEY);
+  if (stored !== null) return stored;
+  storage.set(PRODUCTS_KEY, INITIAL_PRODUCTS);
   return INITIAL_PRODUCTS;
 };
 
-/**
- * Save products to localStorage
- */
-const saveProducts = (products) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-};
+/** Persist products array to localStorage */
+const saveProducts = (products) => storage.set(PRODUCTS_KEY, products);
+
+/** Get all products */
+export const getAllProducts = async () => simulateDelay(getStoredProducts());
 
 /**
- * Get all products
- */
-export const getAllProducts = async () => {
-  const products = getStoredProducts();
-  return simulateDelay(products);
-};
-
-/**
- * Create a new product
+ * Create a new product.
+ * ProductService is the ONLY place IDs are generated.
+ * Any id passed in from a form is discarded and replaced here.
  */
 export const createProduct = async (product) => {
   const products = getStoredProducts();
 
   const newProduct = {
     ...product,
-    id: product.id || Date.now().toString(),
+    // Always overwrite id – single source of truth
+    id: `${(product.brand || 'item').toLowerCase()}-${Date.now()}`,
     createdAt: new Date().toISOString(),
   };
 
@@ -57,46 +43,22 @@ export const createProduct = async (product) => {
   return simulateDelay(newProduct);
 };
 
-/**
- * Update an existing product
- */
+/** Update an existing product */
 export const updateProduct = async (updatedProduct) => {
   const products = getStoredProducts();
-
-  const updatedProducts = products.map((product) =>
-    product.id === updatedProduct.id
-      ? { ...product, ...updatedProduct }
-      : product
+  const updatedList = products.map((p) =>
+    p.id === updatedProduct.id ? { ...p, ...updatedProduct } : p
   );
-
-  saveProducts(updatedProducts);
-
+  saveProducts(updatedList);
   return simulateDelay(updatedProduct);
 };
 
-/**
- * Delete a product by ID
- */
+/** Delete a product by ID */
 export const deleteProduct = async (id) => {
   const products = getStoredProducts();
-
-  const filteredProducts = products.filter(
-    (product) => product.id !== id
-  );
-
-  saveProducts(filteredProducts);
-
-  return simulateDelay({
-    success: true,
-    deletedId: id,
-  });
+  saveProducts(products.filter((p) => p.id !== id));
+  return simulateDelay({ success: true, deletedId: id });
 };
 
-const productService = {
-  getAllProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-};
-
+const productService = { getAllProducts, createProduct, updateProduct, deleteProduct };
 export default productService;

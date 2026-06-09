@@ -19,7 +19,7 @@ export default function AddProductForm({ onAddProduct }) {
     if (!formData.brand.trim()) newErrors.brand = 'Brand selection is required';
     if (!formData.storage.trim()) newErrors.storage = 'Storage capacity is required';
     if (!formData.color.trim()) newErrors.color = 'Color designation is required';
-    
+
     const parsedPrice = parseFloat(formData.price);
     if (!formData.price) {
       newErrors.price = 'Price is required';
@@ -50,13 +50,11 @@ export default function AddProductForm({ onAddProduct }) {
     if (!validateForm()) return;
 
     setIsLoading(true);
-
     try {
-      // Simulate artificial database processing latency
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      const newProduct = {
-        id: `${formData.brand.toLowerCase()}-${formData.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+
+      // Pass only the product data — ID generation happens in productService.createProduct()
+      const productData = {
         name: formData.name.trim(),
         brand: formData.brand.trim(),
         storage: formData.storage.trim(),
@@ -65,23 +63,22 @@ export default function AddProductForm({ onAddProduct }) {
         price: parseFloat(formData.price),
       };
 
-      onAddProduct(newProduct);
+      onAddProduct(productData);
 
-      // Reset form controls completely upon successful submission execution
-      setFormData({
-        name: '',
-        brand: '',
-        storage: '',
-        color: '',
-        price: '',
-        image: '',
-      });
+      setFormData({ name: '', brand: '', storage: '', color: '', price: '', image: '' });
     } catch (error) {
-      console.error('Failed to append item execution:', error);
+      console.error('Failed to submit product:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const inputClass = (field) =>
+    `w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all ${
+      errors[field]
+        ? 'border-red-500 bg-red-50/30'
+        : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
+    }`;
 
   return (
     <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
@@ -91,125 +88,87 @@ export default function AddProductForm({ onAddProduct }) {
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {/* Brand Input */}
+          {/* Brand */}
           <div className="space-y-1.5">
             <label htmlFor="brand" className="text-xs font-medium text-neutral-500">Brand</label>
             <input
-              id="brand"
-              type="text"
-              name="brand"
+              id="brand" type="text" name="brand"
               placeholder="e.g., Apple, Samsung, Nothing"
-              value={formData.brand}
-              onChange={handleChange}
-              disabled={isLoading}
-              className={`w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all ${
-                errors.brand ? 'border-red-500 bg-red-50/30' : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
-              }`}
+              value={formData.brand} onChange={handleChange} disabled={isLoading}
+              className={inputClass('brand')}
             />
             {errors.brand && <p className="text-[11px] text-red-500">{errors.brand}</p>}
           </div>
 
-          {/* Product Name Input */}
+          {/* Product Name */}
           <div className="space-y-1.5">
             <label htmlFor="name" className="text-xs font-medium text-neutral-500">Product Name</label>
             <input
-              id="name"
-              type="text"
-              name="name"
+              id="name" type="text" name="name"
               placeholder="e.g., iPhone 15 Pro, Phone (2a)"
-              value={formData.name}
-              onChange={handleChange}
-              disabled={isLoading}
-              className={`w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all ${
-                errors.name ? 'border-red-500 bg-red-50/30' : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
-              }`}
+              value={formData.name} onChange={handleChange} disabled={isLoading}
+              className={inputClass('name')}
             />
             {errors.name && <p className="text-[11px] text-red-500">{errors.name}</p>}
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-          {/* Storage Input */}
+          {/* Storage */}
           <div className="space-y-1.5">
             <label htmlFor="storage" className="text-xs font-medium text-neutral-500">Storage Capacity</label>
             <input
-              id="storage"
-              type="text"
-              name="storage"
+              id="storage" type="text" name="storage"
               placeholder="e.g., 128GB, 256GB"
-              value={formData.storage}
-              onChange={handleChange}
-              disabled={isLoading}
-              className={`w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all ${
-                errors.storage ? 'border-red-500 bg-red-50/30' : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
-              }`}
+              value={formData.storage} onChange={handleChange} disabled={isLoading}
+              className={inputClass('storage')}
             />
             {errors.storage && <p className="text-[11px] text-red-500">{errors.storage}</p>}
           </div>
 
-          {/* Color Input */}
+          {/* Color */}
           <div className="space-y-1.5">
             <label htmlFor="color" className="text-xs font-medium text-neutral-500">Color Variant</label>
             <input
-              id="color"
-              type="text"
-              name="color"
+              id="color" type="text" name="color"
               placeholder="e.g., Space Black, Milk"
-              value={formData.color}
-              onChange={handleChange}
-              disabled={isLoading}
-              className={`w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all ${
-                errors.color ? 'border-red-500 bg-red-50/30' : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
-              }`}
+              value={formData.color} onChange={handleChange} disabled={isLoading}
+              className={inputClass('color')}
             />
             {errors.color && <p className="text-[11px] text-red-500">{errors.color}</p>}
           </div>
 
-          {/* Price Input */}
+          {/* Price */}
           <div className="space-y-1.5">
-            <label htmlFor="price" className="text-xs font-medium text-neutral-500">Price (USD)</label>
+            <label htmlFor="price" className="text-xs font-medium text-neutral-500">Price (PHP ₱)</label>
             <input
-              id="price"
-              type="number"
-              name="price"
-              placeholder="e.g., 799"
-              value={formData.price}
-              onChange={handleChange}
-              disabled={isLoading}
-              min="0"
-              step="0.01"
-              className={`w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                errors.price ? 'border-red-500 bg-red-50/30' : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
-              }`}
+              id="price" type="number" name="price"
+              placeholder="e.g., 45490"
+              value={formData.price} onChange={handleChange} disabled={isLoading}
+              min="0" step="0.01"
+              className={`${inputClass('price')} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
             />
             {errors.price && <p className="text-[11px] text-red-500">{errors.price}</p>}
           </div>
         </div>
 
-        {/* Image URL Input */}
+        {/* Image URL */}
         <div className="space-y-1.5">
           <label htmlFor="image" className="text-xs font-medium text-neutral-500">Image Asset URL Path</label>
           <input
-            id="image"
-            type="text"
-            name="image"
+            id="image" type="text" name="image"
             placeholder="e.g., /assets/images/device.png or https://..."
-            value={formData.image}
-            onChange={handleChange}
-            disabled={isLoading}
-            className={`w-full rounded-xl border bg-neutral-50 px-3 py-2 text-sm text-neutral-900 outline-none transition-all ${
-              errors.image ? 'border-red-500 bg-red-50/30' : 'border-neutral-200 focus:border-neutral-400 focus:bg-white'
-            }`}
+            value={formData.image} onChange={handleChange} disabled={isLoading}
+            className={inputClass('image')}
           />
           {errors.image && <p className="text-[11px] text-red-500">{errors.image}</p>}
         </div>
 
-        {/* Action Form Submit Trigger */}
         <div className="flex justify-end pt-2">
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full sm:w-auto min-w-[140px] rounded-full bg-neutral-900 px-6 py-2.5 text-xs font-medium text-white transition-all duration-200 hover:bg-neutral-800 disabled:bg-neutral-300 disabled:scale-100 active:scale-98 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto min-w-[140px] rounded-full bg-neutral-900 px-6 py-2.5 text-xs font-medium text-white transition-all duration-200 hover:bg-neutral-800 disabled:bg-neutral-300 disabled:scale-100 active:scale-95 flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
