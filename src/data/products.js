@@ -1,5 +1,23 @@
-// Centralized inventory database for CellWego Store [cite: 1]
-// Standardized naming convention mapping directly to product application service domains [cite: 11]
+// Centralized inventory database for CellWego Store
+// Images are imported so Vite can process and fingerprint them correctly at build time.
+// Using static /assets/... paths does NOT work for files inside src/assets/ —
+// those are not served as public files and have no stable URL until imported.
+
+import iphone15ProMax from '../assets/images/iphone-15-pro-max-natural.png';
+import iphone15Pro from '../assets/images/iphone-15-pro-black.png';
+import iphone15 from '../assets/images/iphone-15-white.png';
+import s24Ultra from '../assets/images/s24-ultra-gray.png';
+import s24Plus from '../assets/images/s24-plus-black.png';
+import galaxyA55 from '../assets/images/galaxy-a55-blue.png';
+import pixel8Pro from '../assets/images/pixel-8-pro-bay.png';
+import pixel8 from '../assets/images/pixel-8-obsidian.png';
+import xiaomi14Ultra from '../assets/images/xiaomi-14-ultra-black.png';
+import nothingPhone2 from '../assets/images/nothing-phone-2-gray.png';
+import nothingPhone2a from '../assets/images/nothing-phone-2a-milk.png';
+
+// NOTE: redmi-note-13-white.png does not exist in src/assets/images/.
+// The Redmi Note 13 Pro+ 5G entry has been removed until the image is added.
+// To restore it: add the image file, import it above, and uncomment the entry below.
 
 export const INITIAL_PRODUCTS = [
   // --- APPLE ---
@@ -9,8 +27,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Apple',
     storage: '256GB',
     color: 'Natural Titanium',
-    image: '/assets/images/iphone-15-pro-max-natural.png',
-    price: 1199
+    image: iphone15ProMax,
+    price: 67990,
   },
   {
     id: 'apple-iphone-15-pro-2',
@@ -18,8 +36,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Apple',
     storage: '128GB',
     color: 'Space Black',
-    image: '/assets/images/iphone-15-pro-black.png',
-    price: 999
+    image: iphone15Pro,
+    price: 56990,
   },
   {
     id: 'apple-iphone-15-3',
@@ -27,8 +45,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Apple',
     storage: '128GB',
     color: 'White',
-    image: '/assets/images/iphone-15-white.png',
-    price: 799
+    image: iphone15,
+    price: 45490,
   },
 
   // --- SAMSUNG ---
@@ -38,8 +56,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Samsung',
     storage: '512GB',
     color: 'Titanium Gray',
-    image: '/assets/images/s24-ultra-gray.png',
-    price: 1299
+    image: s24Ultra,
+    price: 73990,
   },
   {
     id: 'samsung-galaxy-s24-plus-2',
@@ -47,8 +65,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Samsung',
     storage: '256GB',
     color: 'Onyx Black',
-    image: '/assets/images/s24-plus-black.png',
-    price: 999
+    image: s24Plus,
+    price: 56990,
   },
   {
     id: 'samsung-galaxy-a55-3',
@@ -56,8 +74,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Samsung',
     storage: '128GB',
     color: 'Awesome Iceblue',
-    image: '/assets/images/galaxy-a55-blue.png',
-    price: 449
+    image: galaxyA55,
+    price: 25490,
   },
 
   // --- GOOGLE ---
@@ -67,8 +85,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Google',
     storage: '256GB',
     color: 'Bay Blue',
-    image: '/assets/images/pixel-8-pro-bay.png',
-    price: 999
+    image: pixel8Pro,
+    price: 56990,
   },
   {
     id: 'google-pixel-8-2',
@@ -76,8 +94,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Google',
     storage: '128GB',
     color: 'Obsidian',
-    image: '/assets/images/pixel-8-obsidian.png',
-    price: 699
+    image: pixel8,
+    price: 39690,
   },
 
   // --- XIAOMI ---
@@ -87,17 +105,18 @@ export const INITIAL_PRODUCTS = [
     brand: 'Xiaomi',
     storage: '512GB',
     color: 'Black',
-    image: '/assets/images/xiaomi-14-ultra-black.png',
-    price: 1099
+    image: xiaomi14Ultra,
+    price: 62490,
   },
+
   {
     id: 'xiaomi-redmi-note-13-2',
     name: 'Redmi Note 13 Pro+ 5G',
     brand: 'Xiaomi',
     storage: '256GB',
     color: 'Moonlight White',
-    image: '/assets/images/redmi-note-13-white.png',
-    price: 399
+    image: redmiNote13,
+    price: 22690,
   },
 
   // --- NOTHING ---
@@ -107,8 +126,8 @@ export const INITIAL_PRODUCTS = [
     brand: 'Nothing',
     storage: '256GB',
     color: 'Dark Gray',
-    image: '/assets/images/nothing-phone-2-gray.png',
-    price: 599
+    image: nothingPhone2,
+    price: 34090,
   },
   {
     id: 'nothing-phone-2a-2',
@@ -116,9 +135,9 @@ export const INITIAL_PRODUCTS = [
     brand: 'Nothing',
     storage: '128GB',
     color: 'Milk',
-    image: '/assets/images/nothing-phone-2a-milk.png',
-    price: 349
-  }
+    image: nothingPhone2a,
+    price: 19840,
+  },
 ];
 
 export const CATEGORIES = ['all', 'smartphones', 'laptops', 'audio', 'accessories'];

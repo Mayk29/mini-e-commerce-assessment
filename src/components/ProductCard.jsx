@@ -4,6 +4,12 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { brand, name, storage, color, image, price } = product;
 
+  const formattedPrice = new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    minimumFractionDigits: 0,
+  }).format(price);
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-neutral-300 hover:shadow-md">
       {/* Product Image Showcase Container */}
@@ -30,7 +36,7 @@ export default function ProductCard({ product }) {
         <h3 className="mt-1 text-lg font-medium tracking-tight text-neutral-900">
           {name}
         </h3>
-        
+
         <p className="mt-1 text-xs text-neutral-400">
           {color}
         </p>
@@ -38,9 +44,9 @@ export default function ProductCard({ product }) {
         {/* Price and Add to Cart Action Context */}
         <div className="mt-6 flex items-center justify-between pt-4 border-t border-neutral-100">
           <span className="text-lg font-semibold tracking-tight text-neutral-900">
-            ${price.toLocaleString()}
+            {formattedPrice}
           </span>
-          
+
           <button
             type="button"
             onClick={() => addToCart(product)}

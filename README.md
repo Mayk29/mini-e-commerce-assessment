@@ -1,16 +1,54 @@
-# React + Vite
+# CellWego Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A mini e-commerce storefront with an admin dashboard, built as a front-end assessment project.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+CellWego Store is a single-page application featuring a customer-facing storefront and an admin dashboard for product management. It uses a simulated API layer (Promise + setTimeout) to mimic real async data fetching, with localStorage handling cart and product persistence across sessions.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Storefront**
+- Browse and search products with live filtering
+- Add to cart with quantity controls
+- Persistent cart via localStorage
+- Offline detection banner when network is unavailable
 
-## Expanding the ESLint configuration
+**Admin Dashboard**
+- Add, edit, and delete products
+- Form validation with error feedback
+- Changes persist across page reloads via localStorage
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+React 19, Vite 8, Tailwind CSS 4, React Router 7, vite-plugin-pwa
+
+## Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build locally
+npm run preview
+```
+
+## PWA Implementation
+
+Configured via `vite-plugin-pwa` with the following setup:
+
+- **Register type:** `autoUpdate` — service worker registers and updates automatically
+- **Precache:** All compiled JS, CSS, HTML, SVG, PNG, and font assets are precached as the app shell
+- **Manifest:** Includes app name, theme color, display mode (`standalone`), and PWA icons (192×192 and 512×512)
+
+The app is installable on supported browsers and devices as a standalone application.
+
+## Offline Support
+
+An `OfflineBanner` component listens to the browser's `online`/`offline` events and displays a persistent notification when the network is unavailable. Because all assets are precached by the service worker, the app remains fully functional offline — browsing products, managing the cart, and using the admin dashboard all work without a connection.

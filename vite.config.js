@@ -11,7 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
 
       // Assets to precache as part of the application shell
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'icons.svg'],
+      // apple-touch-icon.png removed — file does not exist in public/
+      includeAssets: ['favicon.svg', 'icons.svg'],
 
       // Workbox strategy: precache the compiled JS/CSS/HTML shell
       workbox: {
@@ -30,20 +31,18 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
+            // favicon.svg scales to any size — satisfies the installability icon requirement
+            src: 'favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any',
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
+            // icons.svg used as the maskable variant for adaptive icon support
+            src: 'icons.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
           },
         ],
       },
