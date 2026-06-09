@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import AdminDashboard from './pages/AdminDashboard';
 import Storefront from './pages/Storefront';
 
 const AdminDashboardPlaceholder = () => (
@@ -19,7 +20,7 @@ export default function App() {
         <Route path="/" element={<Storefront />} />
         
         {/* Administrative panel control route */}
-        <Route path="/admin" element={<AdminDashboardPlaceholder />} />
+        <Route path="/admin" element={<AdminDashboard />} /> 
         
         {/* Fallback pattern redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
